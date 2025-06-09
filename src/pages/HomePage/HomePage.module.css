@@ -1,0 +1,27 @@
+.wrapper {
+  padding-top: calc(12 / 16 * 1rem);
+  margin-bottom: calc(8 / 16 * 1rem);
+}
+.image {
+  width: calc(247 / 16 * 1rem);
+  height: calc(191 / 16 * 1rem);
+  background-image: url("../../assets/images/mobile.png");
+  background-size: cover;
+  background-position: center;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .image {
+    display: none;
+  }
+}
+
+@media (min-width: 1440px) {
+  .image {
+    display: block;
+    width: calc(498 / 16 * 1rem);
+    height: calc(435 / 16 * 1rem);
+    background-image: url("../../assets/images/desctop.png");
+  }
+}

@@ -5,7 +5,11 @@ interface RegisterProps {}
 const Register: React.FC<RegisterProps> = () => {
   return (
     <div className={css.wrapper}>
-      <div className="container"> Register</div>
+      <h1>Register</h1>
+      <p>
+        To start using our services, please fill out the registration form
+        below. All fields are mandatory:
+      </p>
     </div>
   );
 };

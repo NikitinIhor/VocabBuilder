@@ -1,0 +1,18 @@
+.wrapper {
+  padding-top: 1rem;
+}
+
+.image {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+span {
+  font-weight: 600;
+  font-size: calc(22 / 16 * 1rem);
+}
+@media (min-width: 768px) {
+  .wrapper {
+    padding-top: calc(24 / 16 * 1rem);
+  }
+}

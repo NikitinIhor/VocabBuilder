@@ -1,4 +1,4 @@
-import Login from "../../components/HomePage/Login/Login";
+import Register from "../../components/HomePage/Register/Register";
 import css from "./HomePage.module.css";
 
 interface HomePageProps {}
@@ -8,7 +8,7 @@ const HomePage: React.FC<HomePageProps> = () => {
     <div className={css.wrapper}>
       <div className="container">
         <div className={css.image}></div>
-        <Login />
+        <Register />
       </div>
     </div>
   );

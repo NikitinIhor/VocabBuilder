@@ -1,0 +1,5 @@
+.wrapper {
+  padding: 1rem calc(32 / 16 * 1rem) 0 calc(32 / 16 * 1rem);
+  background-color: #85aa9f1a;
+  border-radius: 25px 25px 0 0;
+}

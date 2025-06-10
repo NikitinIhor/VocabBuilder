@@ -1,4 +1,3 @@
-import Register from "../../components/HomePage/Register/Register";
 import css from "./HomePage.module.css";
 
 interface HomePageProps {}
@@ -8,7 +7,7 @@ const HomePage: React.FC<HomePageProps> = () => {
     <div className={css.wrapper}>
       <div className="container">
         <div className={css.image}></div>
-        <Register />
+        {/* <RegisterForm /> */}
       </div>
     </div>
   );

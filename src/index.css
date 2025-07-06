@@ -1,3 +1,18 @@
+@import "normalize.css";
+@import "./assets/css/reset.css";
+@import "./assets/css/container.css";
+@import "./assets/css/fonts.css";
+@import "./assets/css/variables.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  font-family: "Maven Pro", sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--black);
+  background-color: var(--white-248);
+}

@@ -5,10 +5,19 @@ import * as yup from "yup";
 import sprite from "../assets/sprite.svg";
 
 import { useState } from "react";
+import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { signin } from "../redux/auth/ops";
+import { selectError, selectLoading } from "../redux/auth/slice";
+import type { AppDispatch } from "../redux/store";
 import { emailPattern, passwordPattern } from "../utils/patterns";
+import Loader from "./Loader";
 
-interface LoginForm {}
+interface LoginFormData {
+  email: string;
+  password: string;
+}
 
 const schema = yup.object().shape({
   email: yup
@@ -22,8 +31,13 @@ const schema = yup.object().shape({
     .required("Password is required"),
 });
 
-const LoginForm: React.FC<LoginForm> = () => {
+const LoginForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
 
   const handleShowPassword = () => {
     setShowPassword((prev) => !prev);
@@ -37,9 +51,18 @@ const LoginForm: React.FC<LoginForm> = () => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: any) => {
-    console.log("Form Data:", data);
+  const onSubmit = (data: LoginFormData) => {
+    dispatch(signin(data));
   };
+
+  if (loading) return <Loader />;
+
+  if (error) {
+    toast.error(error, {
+      duration: 4000,
+      position: "top-right",
+    });
+  }
 
   return (
     <div className="container">

@@ -10,7 +10,7 @@ import LoginForm from "../components/LoginForm";
 const LoginPage: React.FC = () => {
   return (
     <>
-      <div className="container">
+      <div className="container pt-4 md:pt-6">
         <div
           className="flex items-center gap-4 mb-3 
         md:mb-[140px]

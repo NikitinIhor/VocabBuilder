@@ -1,6 +1,9 @@
 import { lazy, Suspense } from "react";
+import { Toaster } from "react-hot-toast";
 import { Route, Routes } from "react-router-dom";
 import Loader from "./components/Loader";
+import { PrivateRoute } from "./components/Routs/PrivateRoute";
+import { RestrictedRoute } from "./components/Routs/RestrictedRoute";
 
 const RegisterPage = lazy(() => import("./pages/RegisterPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
@@ -11,20 +14,46 @@ const TrainingPage = lazy(() => import("./pages/TrainingPage"));
 
 const App: React.FC = () => {
   return (
-    <>
-      {/* <Loader /> */}
-      <Suspense fallback={<Loader />}>
-        <Suspense></Suspense>
-        <Routes>
-          <Route path="/" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/dictionary" element={<DictionaryPage />} />
-          <Route path="/recommended" element={<RecommendedPage />} />
-          <Route path="/training" element={<TrainingPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </Suspense>
-    </>
+    <Suspense fallback={<Loader />}>
+      <Toaster />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <RestrictedRoute
+              component={<RegisterPage />}
+              redirectTo="/dictionary"
+            />
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <RestrictedRoute
+              component={<LoginPage />}
+              redirectTo="/dictionary"
+            />
+          }
+        />
+        <Route
+          path="/dictionary"
+          element={
+            <PrivateRoute component={<DictionaryPage />} redirectTo="/" />
+          }
+        />
+        <Route
+          path="/recommended"
+          element={
+            <PrivateRoute component={<RecommendedPage />} redirectTo="/" />
+          }
+        />
+        <Route
+          path="/training"
+          element={<PrivateRoute component={<TrainingPage />} redirectTo="/" />}
+        />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </Suspense>
   );
 };
 

@@ -1,9 +1,13 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 import { Route, Routes } from "react-router-dom";
 import Loader from "./components/Loader";
 import { PrivateRoute } from "./components/Routs/PrivateRoute";
 import { RestrictedRoute } from "./components/Routs/RestrictedRoute";
+import { refresh } from "./redux/auth/ops";
+import { selectIsRefreshing } from "./redux/auth/slice";
+import type { AppDispatch } from "./redux/store";
 
 const RegisterPage = lazy(() => import("./pages/RegisterPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
@@ -13,7 +17,16 @@ const RecommendedPage = lazy(() => import("./pages/RecommendedPage"));
 const TrainingPage = lazy(() => import("./pages/TrainingPage"));
 
 const App: React.FC = () => {
-  return (
+  const dispatch = useDispatch<AppDispatch>();
+  const isRefreshing = useSelector(selectIsRefreshing);
+
+  useEffect(() => {
+    dispatch(refresh());
+  }, [dispatch]);
+
+  return isRefreshing ? (
+    <Loader />
+  ) : (
     <Suspense fallback={<Loader />}>
       <Toaster />
       <Routes>

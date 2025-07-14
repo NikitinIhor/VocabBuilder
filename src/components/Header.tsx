@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { RxHamburgerMenu } from "react-icons/rx";
@@ -27,159 +28,176 @@ const Header: React.FC = () => {
   const handleCloceMenu = () => {
     setOpenMenu(false);
   };
+  const handleLogout = () => {
+    dispatch(signout());
+    toast.success("Successfully logged out!", {
+      duration: 4000,
+      position: "top-right",
+    });
+  };
 
   return (
-    <header className="container h-[68px] mb-9 xl:mb-[80px] bg-white flex items-center justify-between">
-      <div className="flex items-center gap-4">
-        <picture>
-          <source media="(min-width:768px)" srcSet={logo_big} />
-          <img src={logo} alt="logo" />
-        </picture>
-        <p className="text-lg font-semibold md:text-[22px]">VocabBuilder</p>
-      </div>
-      <nav>
-        <ul className="hidden xl:flex gap-7">
-          <li>
-            <NavLink
-              to="/dictionary"
-              className={({ isActive }) =>
-                isActive
-                  ? "text-white py-3 px-5 rounded-[15px] bg-[var(--green)]"
-                  : "text-black"
-              }
-            >
-              Dictionary
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/recommended"
-              className={({ isActive }) =>
-                isActive
-                  ? "text-white py-3 px-5 rounded-[15px] bg-[var(--green)]"
-                  : "text-black"
-              }
-            >
-              Recommend
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/training"
-              className={({ isActive }) =>
-                isActive
-                  ? "text-white py-3 px-5 rounded-[15px] bg-[var(--green)]"
-                  : "text-black"
-              }
-            >
-              Training
-            </NavLink>
-          </li>
-        </ul>
-      </nav>
+    <header className="bg-white">
+      <div className="container h-[68px] mb-9 xl:mb-[80px] flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <picture>
+            <source media="(min-width:768px)" srcSet={logo_big} />
+            <img src={logo} alt="logo" />
+          </picture>
+          <p className="text-lg font-semibold md:text-[22px]">VocabBuilder</p>
+        </div>
+        <nav>
+          <ul className="hidden xl:flex gap-7">
+            <li>
+              <NavLink
+                to="/dictionary"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-white py-3 px-5 rounded-[15px] bg-[var(--green)]"
+                    : "text-black"
+                }
+              >
+                Dictionary
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/recommended"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-white py-3 px-5 rounded-[15px] bg-[var(--green)]"
+                    : "text-black"
+                }
+              >
+                Recommend
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/training"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-white py-3 px-5 rounded-[15px] bg-[var(--green)]"
+                    : "text-black"
+                }
+              >
+                Training
+              </NavLink>
+            </li>
+          </ul>
+        </nav>
 
-      <div className="flex gap-2 md:gap-7 items-center">
-        <span className="text-lg xl:text-2xl">{user?.name}</span>
-        <div className="w-9 h-9 xl:w-12 xl:h-12 rounded-full flex items-center justify-center bg-[var(--green)]">
-          <svg width={15} height={15}>
-            <use href={`${sprite}#icon-user`}></use>
-          </svg>
+        <div className="flex gap-2 md:gap-7 items-center">
+          <span className="text-lg xl:text-2xl">
+            {user?.name && user.name.length > 7
+              ? user.name.charAt(0).toUpperCase()
+              : user?.name}
+          </span>
+          <div className="w-9 h-9 xl:w-12 xl:h-12 rounded-full flex items-center justify-center bg-[var(--green)]">
+            <svg width={15} height={15}>
+              <use href={`${sprite}#icon-user`}></use>
+            </svg>
+          </div>
+
+          <button onClick={handleOpenMenu} type="button" className="xl:hidden">
+            <RxHamburgerMenu size={40} />
+          </button>
+          <button
+            onClick={handleLogout}
+            type="submit"
+            className="hidden xl:flex items-center gap-2"
+          >
+            <p>Log out</p>
+            <FaLongArrowAltRight />
+          </button>
         </div>
 
-        <button onClick={handleOpenMenu} type="button" className="xl:hidden">
-          <RxHamburgerMenu size={40} />
-        </button>
-        <button
-          onClick={() => dispatch(signout())}
-          type="submit"
-          className="hidden xl:flex items-center gap-2"
-        >
-          <p>Log out</p>
-          <FaLongArrowAltRight />
-        </button>
-      </div>
-
-      {openMenu && (
-        <>
-          <div
-            className="fixed inset-0 bg-[rgba(18,20,23,0.2)] z-30"
-            onClick={handleCloceMenu}
-          ></div>
-          <div className="pt-4 bg-[var(--green)] fixed top-0 right-0 w-[185px] md:w-[300px] h-screen overflow-auto z-40">
-            <div className="container">
-              <div className="flex justify-between items-center mb-[166px]">
-                <div className="flex gap-2 items-center">
-                  <span className="text-white">Iryna</span>
+        {openMenu && (
+          <>
+            <div
+              className="fixed inset-0 bg-[rgba(18,20,23,0.2)] z-30"
+              onClick={handleCloceMenu}
+            ></div>
+            <div className="pt-4 bg-[var(--green)] fixed top-0 right-0 w-[185px] md:w-[300px] h-screen overflow-auto z-40">
+              <div className="container">
+                <div className="flex justify-between items-center mb-[166px]">
                   <div className="flex gap-2 items-center">
-                    <div className="w-9 h-9 rounded-full flex items-center justify-center border">
-                      <svg width={13} height={13}>
-                        <use href={`${sprite}#icon-user`}></use>
-                      </svg>
+                    <span className="text-white">
+                      {user?.name && user.name.length > 7
+                        ? user.name.charAt(0).toUpperCase()
+                        : user?.name}
+                    </span>
+                    <div className="flex gap-2 items-center">
+                      <div className="w-9 h-9 rounded-full flex items-center justify-center border">
+                        <svg width={13} height={13}>
+                          <use href={`${sprite}#icon-user`}></use>
+                        </svg>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <button className="" onClick={handleCloceMenu} type="button">
-                  <IoClose size={40} color="white" />
-                </button>
-              </div>
-              <ul className="flex flex-col gap-7 text-white mb-[92px]">
-                <li>
-                  <NavLink
-                    to="/dictionary"
-                    className={({ isActive }) =>
-                      isActive
-                        ? "text-black py-3 px-5 rounded-[15px] bg-white"
-                        : "text-white"
-                    }
-                  >
-                    Dictionary
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    to="/recommended"
-                    className={({ isActive }) =>
-                      isActive
-                        ? "text-black py-3 px-5 rounded-[15px] bg-white"
-                        : "text-white"
-                    }
-                  >
-                    Recommend
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    to="/training"
-                    className={({ isActive }) =>
-                      isActive
-                        ? "text-black py-3 px-5 rounded-[15px] bg-white"
-                        : "text-white"
-                    }
-                  >
-                    Training
-                  </NavLink>
-                </li>
-                <li>
-                  <button
-                    onClick={() => dispatch(signout())}
-                    type="submit"
-                    className="flex items-center gap-2"
-                  >
-                    <p>Log out</p>
-                    <FaLongArrowAltRight />
+                  <button className="" onClick={handleCloceMenu} type="button">
+                    <IoClose size={40} color="white" />
                   </button>
-                </li>
-              </ul>
-            </div>
+                </div>
+                <ul className="flex flex-col gap-7 text-white mb-[92px]">
+                  <li>
+                    <NavLink
+                      to="/dictionary"
+                      className={({ isActive }) =>
+                        isActive
+                          ? "text-black py-3 px-5 rounded-[15px] bg-white"
+                          : "text-white"
+                      }
+                    >
+                      Dictionary
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/recommended"
+                      className={({ isActive }) =>
+                        isActive
+                          ? "text-black py-3 px-5 rounded-[15px] bg-white"
+                          : "text-white"
+                      }
+                    >
+                      Recommend
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/training"
+                      className={({ isActive }) =>
+                        isActive
+                          ? "text-black py-3 px-5 rounded-[15px] bg-white"
+                          : "text-white"
+                      }
+                    >
+                      Training
+                    </NavLink>
+                  </li>
+                  <li>
+                    <button
+                      onClick={handleLogout}
+                      type="submit"
+                      className="flex items-center gap-2"
+                    >
+                      <p>Log out</p>
+                      <FaLongArrowAltRight />
+                    </button>
+                  </li>
+                </ul>
+              </div>
 
-            <img
-              src={image_375}
-              srcSet={`${image_768} 1x, ${image_768_2x} 2x`}
-              alt="main image"
-            />
-          </div>
-        </>
-      )}
+              <img
+                src={image_375}
+                srcSet={`${image_768} 1x, ${image_768_2x} 2x`}
+                alt="main image"
+              />
+            </div>
+          </>
+        )}
+      </div>
     </header>
   );
 };

@@ -51,8 +51,19 @@ const LoginForm: React.FC = () => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: LoginFormData) => {
-    dispatch(signin(data));
+  const onSubmit = async (data: LoginFormData) => {
+    try {
+      await dispatch(signin(data)).unwrap();
+      toast.success("Successfully signed in!", {
+        duration: 4000,
+        position: "top-right",
+      });
+    } catch (err: any) {
+      toast.error(err.message || "Registration failed", {
+        duration: 4000,
+        position: "top-right",
+      });
+    }
   };
 
   if (loading) return <Loader />;

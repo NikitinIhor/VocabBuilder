@@ -53,8 +53,19 @@ const RegisterForm: React.FC = () => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: RegisterFormData) => {
-    dispatch(signup(data));
+  const onSubmit = async (data: RegisterFormData) => {
+    try {
+      await dispatch(signup(data)).unwrap();
+      toast.success("Successfully registered!", {
+        duration: 4000,
+        position: "top-right",
+      });
+    } catch (err: any) {
+      toast.error(err.message || "Registration failed", {
+        duration: 4000,
+        position: "top-right",
+      });
+    }
   };
 
   if (loading) return <Loader />;

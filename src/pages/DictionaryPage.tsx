@@ -1,8 +1,10 @@
+import { FaLongArrowAltRight } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
-import sprite from "../assets/sprite.svg";
 import Categories from "../components/Categories";
 import Filter from "../components/Filter";
 import Header from "../components/Header";
+import MyTable from "../components/MyTable";
 
 interface DictionaryPageProps {}
 
@@ -25,30 +27,28 @@ const DictionaryPage: React.FC<DictionaryPageProps> = () => {
           <div className="flex items-center gap-2">
             <button
               type="button"
-              className="flex items-center gap-2 p-4
+              className="group flex items-center gap-2 p-4
              text-black
              transition-all duration-500
              hover:text-white hover:bg-[var(--green)] hover:rounded-xl"
             >
               Add word
-              <svg width={20} height={20}>
-                <use href={`${sprite}#icon-arrow`} />
-              </svg>
+              <FaLongArrowAltRight className="text-[var(--green)] group-hover:text-white transition-colors duration-500" />
             </button>
 
             <Link
               to="/training"
-              className="flex items-center gap-2 p-4 transition-all duration-500
+              className="group flex items-center gap-2 md:p-4 
+              transition-all duration-500
              hover:text-white hover:bg-[var(--green)] hover:rounded-xl"
             >
               Train oneself
-              <svg width={20} height={20}>
-                <use href={`${sprite}#icon-plus`} />
-              </svg>
+              <FaPlus className="text-[var(--green)] group-hover:text-white transition-colors duration-500" />
             </Link>
           </div>
         </div>
       </div>
+      <MyTable />
     </div>
   );
 };

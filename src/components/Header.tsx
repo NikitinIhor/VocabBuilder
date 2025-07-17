@@ -38,7 +38,7 @@ const Header: React.FC = () => {
 
   return (
     <header className="bg-white">
-      <div className="container h-[68px] mb-9 xl:mb-[80px] flex items-center justify-between">
+      <div className="container h-[68px] mb-9 xl:mb-[80px] flex gap-1 items-center justify-between">
         <div className="flex items-center gap-4">
           <picture>
             <source media="(min-width:768px)" srcSet={logo_big} />

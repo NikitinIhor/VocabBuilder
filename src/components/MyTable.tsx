@@ -1,62 +1,63 @@
-import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllWords } from "../redux/dictionary/ops";
+import { selectDictionary } from "../redux/dictionary/slice";
+import type { AppDispatch } from "../redux/store";
 
-const data = [
-  { id: 1, word: "Hello", translation: "Cześć", progress: 75 },
-  { id: 2, word: "World", translation: "Świat", progress: 40 },
-  { id: 3, word: "Table", translation: "Stół", progress: 100 },
-];
+interface MyTableProps {}
 
-const columns = [
-  {
-    accessorKey: "word",
-    header: "Word",
-  },
-  {
-    accessorKey: "translation",
-    header: "Translation",
-  },
-  {
-    accessorKey: "progress",
-    header: "Progress",
-    // Optional: render progress as a percentage with a bar or number
-    cell: (info) => `${info.getValue()}%`,
-  },
-  {
-    id: "actions",
-    header: "",
-    cell: () => <button>...</button>, // Your button with "..."
-  },
-];
+interface Word {
+  _id: string;
+  en: string;
+  ua: string;
+  progress?: string;
+}
 
-export default function MyTable() {
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
+const MyTable: React.FC<MyTableProps> = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const dictionary = useSelector(selectDictionary);
+
+  useEffect(() => {
+    dispatch(getAllWords());
+  }, [dispatch]);
+
+  if (!dictionary) {
+    return <p className="container text-xl text-center">No words found.</p>;
+  }
 
   return (
-    <table>
-      <thead>
-        {table.getHeaderGroups().map((headerGroup) => (
-          <tr key={headerGroup.id}>
-            {headerGroup.headers.map((header) => (
-              <th key={header.id}>
-                {header.isPlaceholder ? null : header.renderHeader()}
-              </th>
-            ))}
+    <div className="container">
+      <table className="flex">
+        <thead>
+          <tr>
+            <th>Word</th>
+            <th>Translation</th>
+            <th>Progress</th>
+            <th></th>
           </tr>
-        ))}
-      </thead>
-      <tbody>
-        {table.getRowModel().rows.map((row) => (
-          <tr key={row.id}>
-            {row.getVisibleCells().map((cell) => (
-              <td key={cell.id}>{cell.renderCell()}</td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {dictionary.results.map((word: Word) => {
+            return (
+              <tr key={word._id} className="">
+                <td>{word.en}</td>
+                <td>{word.ua}</td>
+                <td>{word.progress}</td>
+                <td>
+                  <button
+                    onClick={() => console.log("Clicked", word.en)}
+                    className=""
+                  >
+                    ...
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
   );
-}
+};
+
+export default MyTable;

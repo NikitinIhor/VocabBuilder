@@ -128,8 +128,8 @@ const Header: React.FC = () => {
                         : user?.name}
                     </span>
                     <div className="flex gap-2 items-center">
-                      <div className="w-9 h-9 rounded-full flex items-center justify-center border">
-                        <svg width={13} height={13}>
+                      <div className="w-9 h-9 xl:w-12 xl:h-12 rounded-full flex items-center justify-center border">
+                        <svg width={15} height={15}>
                           <use href={`${sprite}#icon-user`}></use>
                         </svg>
                       </div>

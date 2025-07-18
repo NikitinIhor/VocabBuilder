@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import AddWordModal from "../components/AddWordModal";
 import Categories from "../components/Categories";
 import Filter from "../components/Filter";
 import Header from "../components/Header";
@@ -9,6 +11,16 @@ import MyTable from "../components/MyTable";
 interface DictionaryPageProps {}
 
 const DictionaryPage: React.FC<DictionaryPageProps> = () => {
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
   return (
     <div>
       <Header />
@@ -26,6 +38,7 @@ const DictionaryPage: React.FC<DictionaryPageProps> = () => {
 
           <div className="flex items-center gap-2">
             <button
+              onClick={handleOpenModal}
               type="button"
               className="group flex items-center gap-2 p-4
              text-black
@@ -33,7 +46,7 @@ const DictionaryPage: React.FC<DictionaryPageProps> = () => {
              hover:text-white hover:bg-[var(--green)] hover:rounded-xl"
             >
               Add word
-              <FaLongArrowAltRight className="text-[var(--green)] group-hover:text-white transition-colors duration-500" />
+              <FaPlus className="text-[var(--green)] group-hover:text-white transition-colors duration-500" />
             </button>
 
             <Link
@@ -43,9 +56,10 @@ const DictionaryPage: React.FC<DictionaryPageProps> = () => {
              hover:text-white hover:bg-[var(--green)] hover:rounded-xl"
             >
               Train oneself
-              <FaPlus className="text-[var(--green)] group-hover:text-white transition-colors duration-500" />
+              <FaLongArrowAltRight className="text-[var(--green)] group-hover:text-white transition-colors duration-500" />
             </Link>
           </div>
+          {openModal && <AddWordModal handleCloseModal={handleCloseModal} />}
         </div>
       </div>
       <MyTable />

@@ -33,9 +33,9 @@ const MyTable: React.FC<MyTableProps> = () => {
   }
 
   return (
-    <div className="container mx-auto max-w-2xl p-4">
-      <div className="overflow-hidden rounded-t-2xl border border-gray-300 mb-8">
-        <table className="w-full border-collapse text-left">
+    <div className="container mx-auto p-4">
+      <div className="overflow-hidden rounded-t-2xl border border-gray-300 mb-8 md:p-4 bg-white">
+        <table className="w-full border-collapse text-left bg-[rgba(252,252,252,1)]">
           <thead className="bg-[rgba(133,170,159,0.1)] text-gray-700">
             <tr>
               <th className="px-4 py-3 text-sm font-medium border-r border-gray-300 rounded-tl-2xl">
@@ -76,22 +76,22 @@ const MyTable: React.FC<MyTableProps> = () => {
             </tr>
           </thead>
 
-          <tbody className="text-sm text-gray-800">
+          <tbody className="text-sm md:text-base text-gray-800">
             {dictionary.results.map((word: Word) => (
               <tr
                 key={word._id}
                 className="border-t border-gray-300 hover:bg-gray-50 break-words"
               >
-                <td className="p-3 border-r border-gray-300 break-words">
+                <td className="p-2 border-r border-gray-300 break-words">
                   {word.en}
                 </td>
-                <td className="p-3 border-r border-gray-300 whitespace-pre-line break-words">
+                <td className="p-2 border-r border-gray-300 whitespace-pre-line break-words">
                   {word.ua}
                 </td>
-                <td className="hidden md:table-cell p-3 border-r border-gray-300 whitespace-pre-line break-words">
+                <td className="hidden md:table-cell p-2 border-r border-gray-300 whitespace-pre-line break-words">
                   {word.category}
                 </td>
-                <td className="p-3 border-r border-gray-300">
+                <td className="p-2 border-r border-gray-300">
                   <div className="flex justify-center items-center">
                     <CircularProgress
                       variant="determinate"
@@ -106,7 +106,7 @@ const MyTable: React.FC<MyTableProps> = () => {
                     />
                   </div>
                 </td>
-                <td className="flex pt-3 justify-center">
+                <td className="flex pt-2 justify-center">
                   <PopoverMenu word={word} />
                 </td>
               </tr>

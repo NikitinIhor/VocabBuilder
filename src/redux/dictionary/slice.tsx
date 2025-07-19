@@ -1,9 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
-import { getAllWords } from "./ops";
+import { addNewWord, getAllWords } from "./ops";
 
 interface Word {
-  _id: string;
   en: string;
   ua: string;
   category: string;
@@ -47,6 +46,15 @@ const dictionarySlice = createSlice({
       .addCase(getAllWords.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload ?? "Something went wrong";
+      })
+      .addCase(addNewWord.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addNewWord.fulfilled, (state, action: PayloadAction<Word>) => {
+        state.loading = false;
+        state.error = null;
+        state.dictionary?.results.push(action.payload);
       });
   },
 });

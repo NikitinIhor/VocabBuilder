@@ -1,12 +1,72 @@
 import { IoClose } from "react-icons/io5";
+import { useDispatch, useSelector } from "react-redux";
 import ua from "../assets/images/ukraine.png";
 import en from "../assets/images/united kingdom.png";
+import { addNewWord } from "../redux/dictionary/ops";
+import type { AppDispatch } from "../redux/store";
+
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { selectUser } from "../redux/auth/slice";
+
+interface Word {
+  en: string;
+  ua: string;
+  category: string;
+  isIrregular: boolean;
+  owner: string;
+  progress: number;
+}
 
 interface AddWordModalProps {
   handleCloseModal: () => void;
 }
 
 const AddWordModal: React.FC<AddWordModalProps> = ({ handleCloseModal }) => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const user = useSelector(selectUser);
+
+  const [ueWord, setUeWord] = useState("");
+  const [enWord, setEnWord] = useState("");
+
+  const handleAddNewWord = (newWord: Word) => {
+    console.log(newWord);
+    return dispatch(addNewWord(newWord));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    try {
+      e.preventDefault();
+
+      const newWord: Word = {
+        en: enWord,
+        ua: ueWord,
+        category: "verb",
+        isIrregular: true,
+        owner: user!.name,
+        progress: 0,
+      };
+
+      await handleAddNewWord(newWord);
+
+      toast.success(`Word ${newWord.en} successfully added`, {
+        duration: 4000,
+        position: "top-right",
+      });
+    } catch (err: any) {
+      toast.error(
+        err.message || "Something went wrong... please reload the page.",
+        {
+          duration: 4000,
+          position: "top-right",
+        }
+      );
+    } finally {
+      handleCloseModal();
+    }
+  };
+
   return (
     <>
       <div
@@ -24,7 +84,10 @@ const AddWordModal: React.FC<AddWordModalProps> = ({ handleCloseModal }) => {
         >
           <IoClose size={30} color="white" />
         </button>
-        <form className="flex flex-col gap-4 justify-between h-full">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-4 justify-between h-full"
+        >
           <div className="md:flex md:items-center md:gap-8">
             <label
               htmlFor="ukrainian"
@@ -43,8 +106,10 @@ const AddWordModal: React.FC<AddWordModalProps> = ({ handleCloseModal }) => {
               id="ukrainian"
               name="ukrainian"
               type="text"
-              className="h-12 w-full bg-transparent border border-white rounded-2xl pl-6
+              placeholder="Трохи, трішки"
+              className="h-12 w-full bg-transparent border border-white rounded-2xl pl-6 placeholder:text-white
               md:order-1 md:w-[354px]"
+              onChange={(e) => setUeWord(e.target.value)}
             />
           </div>
 
@@ -67,8 +132,10 @@ const AddWordModal: React.FC<AddWordModalProps> = ({ handleCloseModal }) => {
               id="english"
               name="english"
               type="text"
-              className="h-12 w-full bg-transparent border border-white rounded-2xl pl-6
+              placeholder="A little bit"
+              className="h-12 w-full bg-transparent border border-white rounded-2xl pl-6 placeholder:text-white
               md:order-1 md:w-[354px]"
+              onChange={(e) => setEnWord(e.target.value)}
             />
           </div>
           <div className="flex gap-2">

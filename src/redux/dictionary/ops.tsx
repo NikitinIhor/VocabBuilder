@@ -6,13 +6,11 @@ const URL = import.meta.env.VITE_API_URL;
 axios.defaults.baseURL = URL;
 
 export interface Word {
+  _id: string;
   en: string;
   ua: string;
   category: string;
   isIrregular: boolean;
-}
-
-interface WordResponse extends Word {
   owner: string;
   progress: number;
 }
@@ -22,6 +20,13 @@ interface WordsResponse {
   totalPages: number;
   page: number;
   perPage: number;
+}
+
+export interface NewWordInput {
+  en: string;
+  ua: string;
+  category: string;
+  isIrregular: boolean;
 }
 
 export const getAllWords = createAsyncThunk<
@@ -40,8 +45,8 @@ export const getAllWords = createAsyncThunk<
 });
 
 export const addNewWord = createAsyncThunk<
-  WordResponse,
-  Word,
+  any,
+  NewWordInput,
   { rejectValue: string; state: RootState }
 >("dictionary/addNewWord", async (newWord, thunkAPI) => {
   const state = thunkAPI.getState();
@@ -54,14 +59,15 @@ export const addNewWord = createAsyncThunk<
   try {
     const res = await axios.post("/words/create", newWord, {
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
     });
 
     return res.data;
   } catch (error) {
     const err = error as AxiosError;
+
     return thunkAPI.rejectWithValue(err.message);
   }
 });

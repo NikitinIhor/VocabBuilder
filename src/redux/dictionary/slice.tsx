@@ -2,7 +2,8 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 import { addNewWord, getAllWords } from "./ops";
 
-interface Word {
+export interface Word {
+  _id: string;
   en: string;
   ua: string;
   category: string;
@@ -54,7 +55,13 @@ const dictionarySlice = createSlice({
       .addCase(addNewWord.fulfilled, (state, action: PayloadAction<Word>) => {
         state.loading = false;
         state.error = null;
-        state.dictionary?.results.push(action.payload);
+        if (state.dictionary?.results) {
+          state.dictionary.results.push(action.payload);
+        }
+      })
+      .addCase(addNewWord.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "Something went wrong";
       });
   },
 });

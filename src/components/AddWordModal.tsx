@@ -3,65 +3,90 @@ import { useDispatch, useSelector } from "react-redux";
 import ua from "../assets/images/ukraine.png";
 import en from "../assets/images/united kingdom.png";
 import { addNewWord } from "../redux/dictionary/ops";
-import type { AppDispatch } from "../redux/store";
+import type { AppDispatch, RootState } from "../redux/store";
+
+import type { NewWordInput, Word } from "../redux/dictionary/ops";
 
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { selectUser } from "../redux/auth/slice";
-
-interface Word {
-  en: string;
-  ua: string;
-  category: string;
-  isIrregular: boolean;
-  owner: string;
-  progress: number;
-}
 
 interface AddWordModalProps {
   handleCloseModal: () => void;
 }
 
+const isValidSingleWord = (word: string) => {
+  return /^[a-zA-Z]+$/.test(word.trim());
+};
+
 const AddWordModal: React.FC<AddWordModalProps> = ({ handleCloseModal }) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const user = useSelector(selectUser);
+  const words =
+    useSelector((state: RootState) => state.dictionary.results) || [];
 
   const [ueWord, setUeWord] = useState("");
   const [enWord, setEnWord] = useState("");
 
-  const handleAddNewWord = (newWord: Word) => {
+  const handleAddNewWord = (newWord: NewWordInput) => {
     console.log(newWord);
     return dispatch(addNewWord(newWord));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!enWord.trim() || !ueWord.trim()) {
+      toast.error("Please fill in both English and Ukrainian words.");
+      return;
+    }
+
+    if (!isValidSingleWord(enWord)) {
+      toast.error("English word must be a single word.");
+      return;
+    }
+
+    const exists = words.some(
+      (w: Word) => w.en.toLowerCase() === enWord.trim().toLowerCase()
+    );
+
+    if (exists) {
+      toast.error(
+        `The word "${enWord.trim()}" already exists in your dictionary.`
+      );
+      return;
+    }
+
+    const newWord: NewWordInput = {
+      en: enWord.trim(),
+      ua: ueWord.trim(),
+      category: "verb",
+      isIrregular: false,
+    };
+
     try {
-      e.preventDefault();
-
-      const newWord: Word = {
-        en: enWord,
-        ua: ueWord,
-        category: "verb",
-        isIrregular: true,
-        owner: user!.name,
-        progress: 0,
-      };
-
       await handleAddNewWord(newWord);
-
       toast.success(`Word ${newWord.en} successfully added`, {
         duration: 4000,
         position: "top-right",
       });
+
+      setEnWord("");
+      setUeWord("");
     } catch (err: any) {
-      toast.error(
-        err.message || "Something went wrong... please reload the page.",
-        {
-          duration: 4000,
-          position: "top-right",
-        }
-      );
+      if (err.response?.status === 409) {
+        toast.error(`The word "${newWord.en}" already exists.`);
+      } else {
+        toast.error(
+          err.message || "Something went wrong... please reload the page.",
+          {
+            duration: 4000,
+            position: "top-right",
+          }
+        );
+      }
+
+      setEnWord("");
+      setUeWord("");
     } finally {
       handleCloseModal();
     }
@@ -109,6 +134,7 @@ const AddWordModal: React.FC<AddWordModalProps> = ({ handleCloseModal }) => {
               placeholder="Трохи, трішки"
               className="h-12 w-full bg-transparent border border-white rounded-2xl pl-6 placeholder:text-white
               md:order-1 md:w-[354px]"
+              value={ueWord}
               onChange={(e) => setUeWord(e.target.value)}
             />
           </div>
@@ -132,9 +158,10 @@ const AddWordModal: React.FC<AddWordModalProps> = ({ handleCloseModal }) => {
               id="english"
               name="english"
               type="text"
-              placeholder="A little bit"
+              placeholder="go"
               className="h-12 w-full bg-transparent border border-white rounded-2xl pl-6 placeholder:text-white
               md:order-1 md:w-[354px]"
+              value={enWord}
               onChange={(e) => setEnWord(e.target.value)}
             />
           </div>

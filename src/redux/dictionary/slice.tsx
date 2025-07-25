@@ -61,7 +61,12 @@ const dictionarySlice = createSlice({
       })
       .addCase(addNewWord.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload ?? "Something went wrong";
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : action.payload?.message ??
+              action.error.message ??
+              "Something went wrong";
       });
   },
 });

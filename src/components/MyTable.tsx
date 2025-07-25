@@ -8,6 +8,7 @@ import { PopoverMenu } from "./PopoverMenu";
 
 import ua from "../assets/images/ukraine.png";
 import en from "../assets/images/united kingdom.png";
+import { selectFilterWord } from "../redux/filter/slice";
 import WordsPagination from "./WordsPagination";
 
 interface MyTableProps {}
@@ -24,12 +25,28 @@ const MyTable: React.FC<MyTableProps> = () => {
   const dispatch = useDispatch<AppDispatch>();
   const dictionary = useSelector(selectDictionary);
 
+  const filterWord = useSelector(selectFilterWord);
+
   useEffect(() => {
     dispatch(getAllWords());
   }, [dispatch]);
 
   if (!dictionary) {
     return <p className="container text-xl text-center">No words found.</p>;
+  }
+
+  const filteredWords = dictionary.results.filter((word: Word) => {
+    const search = filterWord.toLowerCase();
+    return (
+      word.en.toLowerCase().includes(search) ||
+      word.ua.toLowerCase().includes(search)
+    );
+  });
+
+  if (filteredWords.length === 0) {
+    return (
+      <p className="container text-xl text-center">No matching words found.</p>
+    );
   }
 
   return (
@@ -77,7 +94,7 @@ const MyTable: React.FC<MyTableProps> = () => {
           </thead>
 
           <tbody className="text-sm md:text-base text-gray-800">
-            {dictionary.results.map((word: Word) => (
+            {filteredWords.map((word: Word) => (
               <tr
                 key={word._id}
                 className="border-t border-gray-300 hover:bg-gray-50 break-words"

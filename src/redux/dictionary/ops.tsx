@@ -47,13 +47,16 @@ export const getAllWords = createAsyncThunk<
 export const addNewWord = createAsyncThunk<
   any,
   NewWordInput,
-  { rejectValue: string; state: RootState }
+  { rejectValue: { status: number; message: string }; state: RootState }
 >("dictionary/addNewWord", async (newWord, thunkAPI) => {
   const state = thunkAPI.getState();
   const token = state.auth.token;
 
   if (!token) {
-    return thunkAPI.rejectWithValue("No token found");
+    return thunkAPI.rejectWithValue({
+      status: 401,
+      message: "No token found",
+    });
   }
 
   try {
@@ -68,6 +71,12 @@ export const addNewWord = createAsyncThunk<
   } catch (error) {
     const err = error as AxiosError;
 
-    return thunkAPI.rejectWithValue(err.message);
+    const status = err.response?.status || 500;
+    const message =
+      (err.response?.data as any)?.message ||
+      err.message ||
+      "Something went wrong... please reload the page.";
+
+    return thunkAPI.rejectWithValue({ status, message });
   }
 });

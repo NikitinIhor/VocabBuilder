@@ -1,15 +1,32 @@
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import sprite from "../assets/sprite.svg";
+import { selectFilterWord, setWord } from "../redux/filter/slice";
+import type { AppDispatch } from "../redux/store";
 
-interface FilterProps {}
+const Filter: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const word = useSelector(selectFilterWord);
+  const [inputValue, setInputValue] = useState(word);
 
-const Filter: React.FC<FilterProps> = () => {
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      dispatch(setWord(inputValue));
+    }, 300);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [inputValue, dispatch]);
+
   return (
     <div className="relative">
       <input
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
         type="text"
         placeholder="Find the word"
-        className="bg-transparent border border-[rgba(18,20,23,0.1)] placeholder:text-black rounded-xl 
-        py-3 px-6 w-full"
+        className="bg-transparent border border-[rgba(18,20,23,0.1)] placeholder:text-black rounded-xl py-3 px-6 w-full"
       />
       <svg
         width={20}

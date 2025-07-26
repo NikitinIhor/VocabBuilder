@@ -1,13 +1,23 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import sprite from "../assets/sprite.svg";
-import { selectFilterWord, setWord } from "../redux/filter/slice";
+import {
+  selectFilterError,
+  selectFilterLoading,
+  selectFilterWord,
+  setWord,
+} from "../redux/filter/slice";
 import type { AppDispatch } from "../redux/store";
+import Loader from "./Loader";
 
 const Filter: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const word = useSelector(selectFilterWord);
   const [inputValue, setInputValue] = useState(word);
+
+  const loading = useSelector(selectFilterLoading);
+  const error = useSelector(selectFilterError);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -18,6 +28,15 @@ const Filter: React.FC = () => {
       clearTimeout(handler);
     };
   }, [inputValue, dispatch]);
+
+  if (loading) return <Loader />;
+
+  if (error) {
+    toast.error(error, {
+      duration: 4000,
+      position: "top-right",
+    });
+  }
 
   return (
     <div className="relative">

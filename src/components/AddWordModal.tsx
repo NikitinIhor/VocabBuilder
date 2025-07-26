@@ -1,5 +1,5 @@
 import { IoClose } from "react-icons/io5";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ua from "../assets/images/ukraine.png";
 import en from "../assets/images/united kingdom.png";
 import { addNewWord } from "../redux/dictionary/ops";
@@ -9,6 +9,8 @@ import type { NewWordInput } from "../redux/dictionary/ops";
 
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { selectLoading } from "../redux/dictionary/slice";
+import Loader from "./Loader";
 
 interface AddWordModalProps {
   handleCloseModal: () => void;
@@ -20,27 +22,16 @@ const isValidSingleWord = (word: string) => {
 
 const AddWordModal: React.FC<AddWordModalProps> = ({ handleCloseModal }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const loading = useSelector(selectLoading);
 
   const [ueWord, setUeWord] = useState("");
   const [enWord, setEnWord] = useState("");
 
-  const handleAddNewWord = (newWord: NewWordInput) => {
-    console.log(newWord);
-    return dispatch(addNewWord(newWord));
-  };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!enWord.trim() || !ueWord.trim()) {
-      toast.error("Please fill in both English and Ukrainian words.");
-      return;
-    }
-
-    if (!isValidSingleWord(enWord)) {
-      toast.error("English word must be a single word.");
-      return;
-    }
+    if (!enWord.trim() || !ueWord.trim()) return;
+    if (!isValidSingleWord(enWord)) return;
 
     const newWord: NewWordInput = {
       en: enWord.trim(),
@@ -49,29 +40,31 @@ const AddWordModal: React.FC<AddWordModalProps> = ({ handleCloseModal }) => {
       isIrregular: false,
     };
 
-    const resultAction = await handleAddNewWord(newWord);
+    const resultAction = await dispatch(addNewWord(newWord));
 
     if (addNewWord.rejected.match(resultAction)) {
       const payload = resultAction.payload as {
-        status: number;
-        message: string;
+        status?: number;
+        message?: string;
       };
 
-      if (payload?.status === 409) {
-        toast.error(`The word "${newWord.en}" already exists.`);
-      } else {
-        toast.error(payload?.message || "Something went wrong.");
-      }
-    } else {
-      toast.success(`Word ${newWord.en} successfully added`, {
-        duration: 4000,
+      toast.error(payload?.message || "Something went wrong.", {
         position: "top-right",
       });
-      setEnWord("");
-      setUeWord("");
-      handleCloseModal();
+
+      return;
     }
+
+    toast.success(`Word "${newWord.en}" successfully added!`, {
+      position: "top-right",
+    });
+
+    setEnWord("");
+    setUeWord("");
+    handleCloseModal();
   };
+
+  if (loading) return <Loader />;
 
   return (
     <>

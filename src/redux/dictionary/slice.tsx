@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { showWordsByCategory } from "../filter/ops";
 import type { RootState } from "../store";
 import { addNewWord, getAllWords } from "./ops";
 
@@ -67,6 +68,20 @@ const dictionarySlice = createSlice({
             : action.payload?.message ??
               action.error.message ??
               "Something went wrong";
+      })
+      .addCase(showWordsByCategory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(showWordsByCategory.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.dictionary = action.payload;
+      })
+      .addCase(showWordsByCategory.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          action.payload?.message ?? "Failed to load words by category";
       });
   },
 });

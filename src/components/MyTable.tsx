@@ -1,17 +1,21 @@
 import { CircularProgress } from "@mui/material";
 import { useEffect } from "react";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllWords } from "../redux/dictionary/ops";
-import { selectDictionary } from "../redux/dictionary/slice";
-import type { AppDispatch } from "../redux/store";
-import { PopoverMenu } from "./PopoverMenu";
-
 import ua from "../assets/images/ukraine.png";
 import en from "../assets/images/united kingdom.png";
-import { selectFilterWord } from "../redux/filter/slice";
+import { getAllWords } from "../redux/dictionary/ops";
+import {
+  selectDictionary,
+  selectError,
+  selectLoading,
+} from "../redux/dictionary/slice";
+import { showWordsByCategory } from "../redux/filter/ops";
+import { selectFilterCategory, selectFilterWord } from "../redux/filter/slice";
+import type { AppDispatch } from "../redux/store";
+import Loader from "./Loader";
+import { PopoverMenu } from "./PopoverMenu";
 import WordsPagination from "./WordsPagination";
-
-interface MyTableProps {}
 
 interface Word {
   _id: string;
@@ -21,22 +25,43 @@ interface Word {
   progress?: string;
 }
 
-const MyTable: React.FC<MyTableProps> = () => {
+const MyTable: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const dictionary = useSelector(selectDictionary);
 
+  const dictionary = useSelector(selectDictionary);
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
   const filterWord = useSelector(selectFilterWord);
+  const category = useSelector(selectFilterCategory);
 
   useEffect(() => {
-    dispatch(getAllWords());
-  }, [dispatch]);
+    if (category) {
+      dispatch(showWordsByCategory(category));
+    } else {
+      dispatch(getAllWords());
+    }
+  }, [dispatch, category]);
 
-  if (!dictionary) {
+  useEffect(() => {
+    if (error) {
+      toast.error(error, {
+        duration: 4000,
+        position: "top-right",
+      });
+    }
+  }, [error]);
+
+  if (loading) return <Loader />;
+
+  const results = Array.isArray(dictionary?.results) ? dictionary.results : [];
+
+  if (!results.length) {
     return <p className="container text-xl text-center">No words found.</p>;
   }
 
-  const filteredWords = dictionary.results.filter((word: Word) => {
-    const search = filterWord.toLowerCase();
+  const search = filterWord.toLowerCase();
+
+  const filteredWords = results.filter((word: Word) => {
     return (
       word.en.toLowerCase().includes(search) ||
       word.ua.toLowerCase().includes(search)
@@ -67,7 +92,6 @@ const MyTable: React.FC<MyTableProps> = () => {
                   />
                 </div>
               </th>
-
               <th className="px-4 py-3 text-sm font-medium border-r border-gray-300">
                 <div className="flex items-center justify-between gap-2">
                   <span>Translation</span>
@@ -80,15 +104,12 @@ const MyTable: React.FC<MyTableProps> = () => {
                   />
                 </div>
               </th>
-
               <th className="hidden md:table-cell px-4 py-3 text-sm font-medium border-r border-gray-300">
                 Category
               </th>
-
               <th className="px-4 py-3 text-sm font-medium border-r border-gray-300">
                 Progress
               </th>
-
               <th className="px-4 py-3 text-sm font-medium rounded-tr-2xl"></th>
             </tr>
           </thead>

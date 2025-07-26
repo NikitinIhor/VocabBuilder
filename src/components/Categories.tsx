@@ -1,13 +1,30 @@
 import { IoIosArrowDown } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
+import { showWordsByCategory } from "../redux/filter/ops";
+import { selectFilterCategory, setCategory } from "../redux/filter/slice";
+import type { AppDispatch } from "../redux/store";
 
-interface CategoriesProps {}
+const Categories: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const category = useSelector(selectFilterCategory);
 
-const Categories: React.FC<CategoriesProps> = () => {
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedCategory = e.target.value;
+
+    dispatch(setCategory(selectedCategory));
+
+    if (selectedCategory !== "") {
+      dispatch(showWordsByCategory(selectedCategory));
+    }
+  };
+
   return (
     <div className="relative">
       <select
         className="appearance-none w-full py-3 px-6 border border-[rgba(18,20,23,0.1)] rounded-xl
         bg-transparent text-black text-base focus:outline-none focus:ring-2"
+        value={category}
+        onChange={handleChange}
       >
         <option value="">Categories</option>
         <option value="verb">Verb</option>

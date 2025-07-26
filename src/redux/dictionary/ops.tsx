@@ -15,7 +15,7 @@ export interface Word {
   progress: number;
 }
 
-interface WordsResponse {
+export interface WordsResponse {
   results: Word[];
   totalPages: number;
   page: number;

@@ -10,8 +10,8 @@ import {
   selectError,
   selectLoading,
 } from "../redux/dictionary/slice";
-import { showWordsByCategory } from "../redux/filter/ops";
-import { selectFilterCategory, selectFilterWord } from "../redux/filter/slice";
+
+import { selectFilterWord } from "../redux/filter/slice";
 import type { AppDispatch } from "../redux/store";
 import Loader from "./Loader";
 import { PopoverMenu } from "./PopoverMenu";
@@ -32,15 +32,10 @@ const MyTable: React.FC = () => {
   const loading = useSelector(selectLoading);
   const error = useSelector(selectError);
   const filterWord = useSelector(selectFilterWord);
-  const category = useSelector(selectFilterCategory);
 
   useEffect(() => {
-    if (category) {
-      dispatch(showWordsByCategory(category));
-    } else {
-      dispatch(getAllWords());
-    }
-  }, [dispatch, category]);
+    dispatch(getAllWords());
+  }, [dispatch]);
 
   useEffect(() => {
     if (error) {

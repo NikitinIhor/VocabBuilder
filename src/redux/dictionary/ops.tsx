@@ -31,11 +31,11 @@ export interface NewWordInput {
 
 export const getAllWords = createAsyncThunk<
   WordsResponse,
-  void,
+  number,
   { rejectValue: string }
->("dictionary/getAll", async (_, thunkAPI) => {
+>("dictionary/getAll", async (page = 1, thunkAPI) => {
   try {
-    const res = await axios.get<WordsResponse>("/words/all");
+    const res = await axios.get<WordsResponse>(`/words/all?page=${page}`);
 
     return res.data;
   } catch (error) {

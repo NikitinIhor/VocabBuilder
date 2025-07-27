@@ -3,7 +3,6 @@ import { FaLongArrowAltRight } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import AddWordModal from "../components/AddWordModal";
-import Categories from "../components/Categories";
 import Filter from "../components/Filter";
 import Header from "../components/Header";
 import MyTable from "../components/MyTable";
@@ -25,9 +24,8 @@ const DictionaryPage: React.FC<DictionaryPageProps> = () => {
     <div>
       <Header />
       <div className="mb-8 xl:flex xl:items-center xl:justify-between">
-        <div className="container flex flex-col gap-2 mb-10 md:mb-7 xl:mb-0 md:flex-row">
+        <div className="containermb-10 md:mb-7">
           <Filter />
-          <Categories />
         </div>
 
         <div className="container flex flex-col gap-2 md:flex-row md:gap-4">

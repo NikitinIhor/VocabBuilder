@@ -6,9 +6,11 @@ import ua from "../assets/images/ukraine.png";
 import en from "../assets/images/united kingdom.png";
 import { getAllWords } from "../redux/dictionary/ops";
 import {
+  selectCurrentPage,
   selectDictionary,
   selectError,
   selectLoading,
+  setCurrentPage,
 } from "../redux/dictionary/slice";
 
 import { selectFilterWord } from "../redux/filter/slice";
@@ -32,10 +34,11 @@ const MyTable: React.FC = () => {
   const loading = useSelector(selectLoading);
   const error = useSelector(selectError);
   const filterWord = useSelector(selectFilterWord);
+  const currentPage = useSelector(selectCurrentPage);
 
   useEffect(() => {
-    dispatch(getAllWords());
-  }, [dispatch]);
+    dispatch(getAllWords(currentPage));
+  }, [dispatch, currentPage]);
 
   useEffect(() => {
     if (error) {
@@ -147,7 +150,11 @@ const MyTable: React.FC = () => {
           </tbody>
         </table>
       </div>
-      <WordsPagination />
+      <WordsPagination
+        currentPage={currentPage}
+        totalPages={dictionary?.totalPages || 1}
+        onPageChange={(page) => dispatch(setCurrentPage(page))}
+      />
     </div>
   );
 };

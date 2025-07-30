@@ -45,7 +45,7 @@ const Filter: React.FC = () => {
         onChange={(e) => setInputValue(e.target.value)}
         type="text"
         placeholder="Find the word"
-        className="bg-transparent border border-[rgba(18,20,23,0.1)] placeholder:text-black rounded-xl py-3 px-6 w-full"
+        className="bg-transparent border-2 border-[rgba(18,20,23,0.1)] placeholder:text-black rounded-xl py-3 px-6 w-full"
       />
       <svg
         width={20}

@@ -21,18 +21,26 @@ interface DictionaryState {
   loading: boolean;
   error: string | null;
   dictionary: Words | null;
+  currentPage: number;
 }
 
 const initialState: DictionaryState = {
   loading: false,
   error: null,
   dictionary: null,
+  currentPage: 1,
 };
 
 const dictionarySlice = createSlice({
   name: "dictionary",
   initialState,
-  reducers: {},
+
+  reducers: {
+    setCurrentPage: (state, action: PayloadAction<number>) => {
+      state.currentPage = action.payload;
+    },
+  },
+
   extraReducers: (builder) => {
     builder
       .addCase(getAllWords.pending, (state) => {
@@ -75,5 +83,9 @@ export const selectLoading = (state: RootState) => state.dictionary.loading;
 export const selectError = (state: RootState) => state.dictionary.error;
 export const selectDictionary = (state: RootState) =>
   state.dictionary.dictionary;
+export const selectCurrentPage = (state: RootState) =>
+  state.dictionary.currentPage;
+
+export const { setCurrentPage } = dictionarySlice.actions;
 
 export default dictionarySlice.reducer;

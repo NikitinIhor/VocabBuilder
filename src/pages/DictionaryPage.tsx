@@ -23,8 +23,8 @@ const DictionaryPage: React.FC<DictionaryPageProps> = () => {
   return (
     <div>
       <Header />
-      <div className="mb-8 xl:flex xl:items-center xl:justify-between">
-        <div className="containermb-10 md:mb-7">
+      <div className="mb-8 xl:flex xl:items-center xl:justify-between xl:mb-7">
+        <div className="container mb-10 md:mb-7 xl:mb-0">
           <Filter />
         </div>
 
